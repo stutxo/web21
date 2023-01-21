@@ -1,5 +1,5 @@
 [package]
-name = "matchbox_demo"
+name = "web21"
 version = "0.5.0"
 description = "A demo game where two web browser can connect and move boxes around"
 edition = "2021"
@@ -19,22 +19,13 @@ default = [
 
 
 [dependencies]
-web-sys = { version = "0.3.22", features = [
-    "Document", "Location"# for getting args from query string
-] }
-console_error_panic_hook = "0.1"
-console_log = "0.2"
-serde_qs = "0.11"
-wasm-bindgen = "0.2"
-ggrs = { version = "0.9.3", features = ["wasm-bindgen"] }
+bevy = "0.9"
+bevy_ggrs = { version = "0.11", features = ["wasm-bindgen"] }
+bevy_asset_loader = "0.14"
 matchbox_socket_nostr = {version = "0.0.1", features = ["ggrs-socket"] }
-bevy = { version = "0.9", default-features = false }
-bevy_ggrs = "0.11"
-bytemuck = { version = "1.7", features=["derive"]}
-clap = { version = "4.0.28", features = ["derive"] }
-serde = "1.0"
-winit = "0.27"
-log = "0.4"
+
+
+
 
 # [profile.dev]
 # opt-level = 1
