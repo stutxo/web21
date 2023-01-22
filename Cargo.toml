@@ -22,9 +22,7 @@ default = [
 bevy = "0.9"
 bevy_ggrs = { version = "0.11", features = ["wasm-bindgen"] }
 bevy_asset_loader = "0.14"
-matchbox_socket_nostr = {version = "0.0.1", features = ["ggrs-socket"] }
-
-
+matchbox_socket_nostr = {version = "0.0.2", features = ["ggrs-socket"] }
 
 
 # [profile.dev]

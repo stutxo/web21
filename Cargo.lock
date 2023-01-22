@@ -2387,9 +2387,9 @@ dependencies = [
 
 [[package]]
 name = "matchbox_socket_nostr"
-version = "0.0.1"
+version = "0.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7251bb55f1cafc9a6670c277af8a08d2e035190053e21da9b49008a582e2f6f"
+checksum = "e56f867d0eaf7a39f48be2b67ab7850287e0c206aa3d7f188de47e9accf7c8ca"
 dependencies = [
  "bincode",
  "futures",

@@ -100,7 +100,7 @@ fn main() {
 }
 
 const MAP_SIZE: i32 = 41;
-const GRID_WIDTH: f32 = 0.05;
+const GRID_WIDTH: f32 = 0.01;
 
 #[derive(AssetCollection, Resource)]
 struct ImageAssets {
@@ -138,7 +138,7 @@ fn setup(mut commands: Commands) {
         });
     }
 
-    // Vertical lines
+    //vertical lines
     for i in 0..=MAP_SIZE {
         commands.spawn(SpriteBundle {
             transform: Transform::from_translation(Vec3::new(
