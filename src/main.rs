@@ -1,4 +1,5 @@
 use bevy::log::LogPlugin;
+use bevy::window::{CompositeAlphaMode, WindowResizeConstraints, PresentMode, CursorGrabMode};
 use bevy::{prelude::*, tasks::IoTaskPool};
 use bevy_ggrs::{GGRSPlugin, Session};
 use ggrs::SessionBuilder;
@@ -61,8 +62,23 @@ fn main() {
                 })
                 .set(WindowPlugin {
                     window: WindowDescriptor {
-                        fit_canvas_to_parent: true, // behave on wasm
-                        ..default()
+                        title: "web21".to_string(),
+                        width: 500.,
+                        height: 400.,
+                        position: WindowPosition::Automatic,
+                        monitor: MonitorSelection::Current,
+                        resize_constraints: WindowResizeConstraints::default(),
+                        scale_factor_override: None,
+                        present_mode: PresentMode::Fifo,
+                        resizable: false,
+                        decorations: true,
+                        cursor_grab_mode: CursorGrabMode::None,
+                        cursor_visible: false,
+                        mode: WindowMode::Windowed,
+                        transparent: false,
+                        canvas: None,
+                        fit_canvas_to_parent: false,
+                        alpha_mode: CompositeAlphaMode::Auto,
                     },
                     ..default()
                 }),
@@ -137,7 +153,7 @@ fn lobby_startup(mut commands: Commands, asset_server: Res<AssetServer>) {
                         "Entering lobby...",
                         TextStyle {
                             font: asset_server.load("fonts/quicksand-light.ttf"),
-                            font_size: 96.,
+                            font_size: 40.,
                             color: Color::BLACK,
                         },
                     ),

@@ -40,6 +40,5 @@ log = "0.4.17"
 # [profile.dev]
 # opt-level = 1
 
-# [profile.release]
-# lto = true
-# opt-level = 's'
+[profile.release]
+lto = "thin"

@@ -17,8 +17,8 @@ const INPUT_RIGHT: u8 = 1 << 3;
 
 const MOVEMENT_SPEED: f32 = 0.005;
 const MAX_SPEED: f32 = 0.05;
-const FRICTION: f32 = 0.9;
-const PLANE_SIZE: f32 = 3.0;
+const FRICTION: f32 = 0.8;
+const PLANE_SIZE: f32 = 8.0;
 const CUBE_SIZE: f32 = 0.1;
 
 /// You need to define a config struct to bundle all the generics of GGRS. You can safely ignore `State` and leave it as u8 for all GGRS functionality.
