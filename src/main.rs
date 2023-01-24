@@ -97,6 +97,7 @@ fn start_matchbox_socket(mut commands: Commands, args: Res<Args>) {
     // The message loop needs to be awaited, or nothing will happen.
     // We do this here using bevy's task system.
     let task_pool = IoTaskPool::get();
+    #[cfg(target_arch = "wasm32")]
     task_pool.spawn(message_loop).detach();
 
     commands.insert_resource(SocketResource(Some(socket)));

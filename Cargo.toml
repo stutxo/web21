@@ -19,23 +19,23 @@ default = [
 
 
 [dependencies]
-bevy = { version = "0.9", default-features = false }
+bevy = { version = "0.9.1", default-features = false }
 bevy_ggrs = { version = "0.11", features = ["wasm-bindgen"] }
-bevy_asset_loader = "0.14"
+bevy_asset_loader = "0.14.1"
 matchbox_socket_nostr = {version = "0.0.2", features = ["ggrs-socket"] }
-web-sys = { version = "0.3.22", features = [
+web-sys = { version = "0.3.60", features = [
     "Document", "Location"# for getting args from query string
 ] }
-console_error_panic_hook = "0.1"
+console_error_panic_hook = "0.1.7"
 console_log = "0.2"
 serde_qs = "0.11"
-wasm-bindgen = "0.2"
+wasm-bindgen = "0.2.83"
 ggrs = { version = "0.9.3", features = ["wasm-bindgen"] }
-bytemuck = { version = "1.7", features=["derive"]}
-clap = { version = "4.0.28", features = ["derive"] }
-serde = "1.0"
-winit = "0.27"
-log = "0.4"
+bytemuck = { version = "1.13", features=["derive"]}
+clap = { version = "4.1.1", features = ["derive"] }
+serde = "1.0.152"
+winit = "0.27.5"
+log = "0.4.17"
 
 # [profile.dev]
 # opt-level = 1

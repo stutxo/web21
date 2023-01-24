@@ -18,8 +18,8 @@ const INPUT_RIGHT: u8 = 1 << 3;
 const MOVEMENT_SPEED: f32 = 0.005;
 const MAX_SPEED: f32 = 0.05;
 const FRICTION: f32 = 0.9;
-const PLANE_SIZE: f32 = 5.0;
-const CUBE_SIZE: f32 = 0.2;
+const PLANE_SIZE: f32 = 3.0;
+const CUBE_SIZE: f32 = 0.1;
 
 /// You need to define a config struct to bundle all the generics of GGRS. You can safely ignore `State` and leave it as u8 for all GGRS functionality.
 /// TODO: Find a way to hide the state type.
@@ -134,7 +134,7 @@ pub fn setup_scene_system(
     });
     // camera
     for mut transform in camera_query.iter_mut() {
-        *transform = Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y);
+        *transform = Transform::from_xyz(0., 1., 5.0).looking_at(Vec3::ZERO, Vec3::Y);
     }
 }
 
