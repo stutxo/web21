@@ -1,8 +1,8 @@
 use bevy::log::LogPlugin;
-use bevy::window::{CompositeAlphaMode, WindowResizeConstraints, PresentMode, CursorGrabMode};
+
 use bevy::{prelude::*, tasks::IoTaskPool};
 use bevy_ggrs::{GGRSPlugin, Session};
-use ggrs::SessionBuilder;
+use ggrs::{SessionBuilder, PlayerType};
 use matchbox_socket_nostr::WebRtcSocket;
 
 mod args;
@@ -24,6 +24,9 @@ const SKY_COLOR: Color = Color::rgb(0.69, 0.69, 0.69);
 
 #[derive(Default, Resource)]
 struct SocketResource(Option<WebRtcSocket>);
+
+#[derive(Resource)]
+struct LocalPlayerHandle(usize);
 
 fn main() {
     // read query string or command line arguments
@@ -62,23 +65,8 @@ fn main() {
                 })
                 .set(WindowPlugin {
                     window: WindowDescriptor {
-                        title: "web21".to_string(),
-                        width: 500.,
-                        height: 400.,
-                        position: WindowPosition::Automatic,
-                        monitor: MonitorSelection::Current,
-                        resize_constraints: WindowResizeConstraints::default(),
-                        scale_factor_override: None,
-                        present_mode: PresentMode::Fifo,
-                        resizable: false,
-                        decorations: true,
-                        cursor_grab_mode: CursorGrabMode::None,
-                        cursor_visible: false,
-                        mode: WindowMode::Windowed,
-                        transparent: false,
-                        canvas: None,
-                        fit_canvas_to_parent: false,
-                        alpha_mode: CompositeAlphaMode::Auto,
+                        fit_canvas_to_parent: true, // behave on wasm
+                        ..default()
                     },
                     ..default()
                 }),
@@ -96,6 +84,7 @@ fn main() {
         .add_system_set(SystemSet::on_exit(AppState::Lobby).with_system(lobby_cleanup))
         .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(setup_scene_system))
         .add_system_set(SystemSet::on_update(AppState::InGame).with_system(log_ggrs_events))
+        .add_system_set(SystemSet::on_update(AppState::InGame).with_system(camera_follow))
         .run();
 }
 
@@ -185,6 +174,8 @@ fn lobby_system(
         return;
     }
 
+   
+
     info!("All peers have joined, going in-game");
 
     // consume the socket (currently required because ggrs takes ownership of its socket)
@@ -202,11 +193,16 @@ fn lobby_system(
         .with_input_delay(2)
         .with_fps(FPS)
         .expect("invalid fps");
+           
 
     for (i, player) in players.into_iter().enumerate() {
+        let player_clone = player.clone();
         sess_build = sess_build
             .add_player(player, i)
             .expect("failed to add player");
+            if player_clone == PlayerType::Local {
+                commands.insert_resource(LocalPlayerHandle(i));
+            }
     }
 
     // start the GGRS session
@@ -230,5 +226,30 @@ fn log_ggrs_events(mut session: ResMut<Session<GGRSConfig>>) {
             }
         }
         _ => panic!("This example focuses on p2p."),
+    }
+}
+
+fn camera_follow(
+    player_handle: Option<Res<LocalPlayerHandle>>,
+    player_query: Query<(&Player, &Transform)>,
+    mut camera_query: Query<&mut Transform, (With<Camera>, Without<Player>)>,
+) {
+    let player_handle = match player_handle {
+        Some(handle) => handle.0,
+        None => return, // Session hasn't started yet
+    };
+
+    for (player, player_transform) in player_query.iter() {
+        if player.handle != player_handle {
+            continue;
+        }
+
+        let pos = player_transform.translation;
+
+        for mut transform in camera_query.iter_mut() {
+            transform.translation.x = pos.x;
+            transform.translation.y = pos.y + 2.0;
+            transform.translation.z = pos.z + 6.0;
+        }
     }
 }

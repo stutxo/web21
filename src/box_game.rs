@@ -18,7 +18,7 @@ const INPUT_RIGHT: u8 = 1 << 3;
 const MOVEMENT_SPEED: f32 = 0.005;
 const MAX_SPEED: f32 = 0.05;
 const FRICTION: f32 = 0.8;
-const PLANE_SIZE: f32 = 8.0;
+const PLANE_SIZE: f32 = 16.0;
 const CUBE_SIZE: f32 = 0.1;
 
 /// You need to define a config struct to bundle all the generics of GGRS. You can safely ignore `State` and leave it as u8 for all GGRS functionality.
@@ -82,7 +82,7 @@ pub fn setup_scene_system(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     session: Res<Session<GGRSConfig>>,
-    mut camera_query: Query<&mut Transform, With<Camera>>,
+    // mut camera_query: Query<&mut Transform, With<Camera>>,
 ) {
     let num_players = match &*session {
         Session::SyncTestSession(s) => s.num_players(),
@@ -113,6 +113,8 @@ pub fn setup_scene_system(
         transform.translation.z = z;
         let color = PLAYER_COLORS[handle % PLAYER_COLORS.len()];
 
+        
+
         commands.spawn((
             PbrBundle {
                 mesh: meshes.add(Mesh::from(shape::Cube { size: CUBE_SIZE })),
@@ -125,17 +127,35 @@ pub fn setup_scene_system(
             // this component indicates bevy_GGRS that parts of this entity should be saved and loaded
             Rollback::new(rip.next_id()),
         ));
+
+       
     }
 
-    // light
+    //light
     commands.spawn(PointLightBundle {
         transform: Transform::from_xyz(-4.0, 8.0, 4.0),
         ..default()
     });
-    // camera
-    for mut transform in camera_query.iter_mut() {
-        *transform = Transform::from_xyz(0., 1., 5.0).looking_at(Vec3::ZERO, Vec3::Y);
-    }
+    
+    // commands.spawn(PointLightBundle {
+    //     transform: Transform::from_xyz(4.0, 8.0, 4.0),
+    //     ..Default::default()
+    // });
+
+
+
+    commands.spawn(PointLightBundle {
+        transform: Transform::from_xyz(4.0, 8.0, 4.0),
+        ..Default::default()
+    });
+
+    // commands
+    // .spawn(Camera3dBundle::default())
+    // .insert(FpsCameraBundle::new(
+    //     FpsCameraController::default(),
+    //     Vec3::new(-2.0, 5.0, 5.0),
+    //     Vec3::new(0., 0., 0.),
+    // ));
 }
 
 // Example system, manipulating a resource, will be added to the rollback schedule.
@@ -153,8 +173,9 @@ pub fn increase_frame_system(mut frame_count: ResMut<FrameCount>) {
 pub fn move_cube_system(
     mut query: Query<(&mut Transform, &mut Velocity, &Player), With<Rollback>>,
     inputs: Res<PlayerInputs<GGRSConfig>>,
-) {
+  ) {
     for (mut t, mut v, p) in query.iter_mut() {
+        
         let input = inputs[p.handle].0.inp;
         // set velocity through key presses
         if input & INPUT_UP != 0 && input & INPUT_DOWN == 0 {
@@ -198,5 +219,8 @@ pub fn move_cube_system(
         t.translation.x = t.translation.x.min((PLANE_SIZE - CUBE_SIZE) * 0.5);
         t.translation.z = t.translation.z.max(-1. * (PLANE_SIZE - CUBE_SIZE) * 0.5);
         t.translation.z = t.translation.z.min((PLANE_SIZE - CUBE_SIZE) * 0.5);
+
+       
     }
 }
+
