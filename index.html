@@ -1,16 +1,134 @@
 <!DOCTYPE html><html lang="en"><head>
-  <title>web21</title>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
-  <script type="module">import init from './web21-ceda1d231c5679fb.js';init('./web21-ceda1d231c5679fb_bg.wasm');</script>
+    <meta charset="utf-8">
+    <title>game</title>
+    
+    
+    
+    <link rel="icon" href="icon.ico">
+    <style type="text/css">:root {
+    --game-ui-height: 600px;
+}
 
+body, html {
+    height: 100%;
+}
 
-<link rel="preload" href="./web21-ceda1d231c5679fb_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="./web21-ceda1d231c5679fb.js"></head>
+body {
+    background: black 0;
+    margin: 0;
+}
+
+.game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#bevy {
+    background-color: white;
+    width: 800px;
+    height: var(--game-ui-height);
+}
+
+.loader {
+    --loader-size: 32px;
+    --loader-position-y: 155px;
+    position: fixed;
+    left: calc(50% - var(--loader-size) / 2);
+    top: calc(50% - var(--game-ui-height) / 2 + var(--loader-position-y));
+    width: var(--loader-size);
+    height: var(--loader-size);
+    border: 3px solid #005c80;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: rotation 2s linear infinite;
+}
+
+.loader:not([hidden]) {
+    display: inline-block;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<link rel="preload" href="./game-dc0ff1214baeb44d_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="./game-dc0ff1214baeb44d.js"></head>
 <body>
+<script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
+// https://developers.google.com/web/updates/2018/11/web-audio-autoplay#moving-forward
+
+// the following function keeps track of all AudioContexts and resumes them on the first user
+// interaction with the page. If the function is called and all contexts are already running,
+// it will remove itself from all event listeners.
+(function () {
+    // An array of all contexts to resume on the page
+    const audioContextList = [];
+
+    // An array of various user interaction events we should listen for
+    const userInputEventNames = [
+        "click",
+        "contextmenu",
+        "auxclick",
+        "dblclick",
+        "mousedown",
+        "mouseup",
+        "pointerup",
+        "touchend",
+        "keydown",
+        "keyup",
+    ];
+
+    // A proxy object to intercept AudioContexts and
+    // add them to the array for tracking and resuming later
+    self.AudioContext = new Proxy(self.AudioContext, {
+        construct(target, args) {
+            const result = new target(...args);
+            audioContextList.push(result);
+            return result;
+        },
+    });
+
+    // To resume all AudioContexts being tracked
+    function resumeAllContexts(_event) {
+        let count = 0;
+
+        audioContextList.forEach((context) => {
+            if (context.state !== "running") {
+                context.resume();
+            } else {
+                count++;
+            }
+        });
+
+        // If all the AudioContexts have now resumed then we unbind all
+        // the event listeners from the page to prevent unnecessary resume attempts
+        // Checking count > 0 ensures that the user interaction happens AFTER the game started up
+        if (count > 0 && count === audioContextList.length) {
+            userInputEventNames.forEach((eventName) => {
+                document.removeEventListener(eventName, resumeAllContexts);
+            });
+        }
+    }
+
+    // We bind the resume function for each user interaction
+    // event on the page
+    userInputEventNames.forEach((eventName) => {
+        document.addEventListener(eventName, resumeAllContexts);
+    });
+})();
+</script>
+<div class="loader" hidden=""></div>
+<div class="game-container">
+    <canvas id="bevy">
+        Javascript and support for canvas is required
+    </canvas>
+</div>
 
 
-
-</body></html>
+<script type="module">import init from './game-dc0ff1214baeb44d.js';init('./game-dc0ff1214baeb44d_bg.wasm');</script></body></html>
